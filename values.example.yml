@@ -1,0 +1,14 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+php:
+  mount: ../path/to/php
+  hosts:
+  - name: localhost
+
+postgres:
+  enabled: true
+  host_port: 5432
+  database: postgresql
+  username: postgresql
+  password: secret
