@@ -1,0 +1,22 @@
+#@ load("@ytt:data", "data")
+#@ load("_traefik.star", "traefik_labels")
+--- #@yaml/text-templated-strings
+#@ if data.values.postgres.enabled:
+version: '2.2'
+
+services:
+  postgres:
+    image: #@ data.values.postgres.image
+    restart: always
+    mem_limit: #@ data.values.postgres.mem_limit
+    #@ if data.values.postgres.host_port:
+    ports:
+      - #@ "{}:5432".format(data.values.postgres.host_port)
+    #@ end
+    volumes:
+      - (@= data.values.data_path @)/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: #@ data.values.postgres.database
+      POSTGRES_USER: #@ data.values.postgres.username
+      POSTGRES_PASSWORD: #@ data.values.postgres.password
+#@ end

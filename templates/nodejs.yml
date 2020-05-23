@@ -1,0 +1,21 @@
+#@yaml/text-templated-strings
+#@ load("@ytt:data", "data")
+#@ load("_traefik.star", "traefik_labels")
+---
+#@ if data.values.nodejs.enabled:
+version: '2.2'
+
+services:
+  nodejs:
+    image: node:12-alpine
+    restart: always
+    labels: #@ traefik_labels("web", data.values.nodejs)
+    working_dir: (@= data.values.nodejs.working_dir @)
+    #@ if hasattr(data.values.nodejs, "environment"):
+    environment: #@ data.values.nodejs.environment
+    #@ end
+    volumes:
+      - (@= data.values.nodejs.mount @):(@= data.values.nodejs.working_dir @)
+      - (@= data.values.hosts_file @):/etc/hosts
+    tty: true
+#@ end

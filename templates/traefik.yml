@@ -1,0 +1,25 @@
+#@yaml/text-templated-strings
+#@ load("@ytt:data", "data")
+---
+version: '2.2'
+
+services:
+  traefik:
+    image: #@ data.values.traefik.image
+    restart: always
+    command:
+      - --api.dashboard=true
+      - --entrypoints.http.address=:80
+      - --providers.docker
+      - --providers.docker.watch=true
+      - --providers.docker.exposedbydefault=false
+    ports:
+      - #@ "{}:80".format(data.values.traefik.port)
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.traefik.rule=Host(`traefik.(@= data.values.traefik.hostname @)`)
+      - traefik.http.routers.traefik.service=api@internal
+      - traefik.http.middlewares.traefik-dashboard.redirectRegex.regex=/
+      - traefik.http.middlewares.traefik-dashboard.redirectRegex.replacement=/dashboard/
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

@@ -1,0 +1,23 @@
+#@ load("@ytt:data", "data")
+#@ if data.values.mysql.enabled:
+version: '2.2'
+
+services:
+  mysql:
+    image: #@ data.values.mysql.image
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    mem_limit: #@ data.values.mysql.mem_limit
+    #@ if data.values.mysql.host_port:
+    ports:
+      - #@ "{}:3306".format(data.values.mysql.host_port)
+    #@ end
+    volumes:
+      - #@ "{}/mysql:/var/lib/mysql".format(data.values.data_path)
+    environment:
+      MYSQL_DATABASE: #@ data.values.mysql.database
+      MYSQL_USER: #@ data.values.mysql.username
+      MYSQL_PASSWORD: #@ data.values.mysql.password
+      MYSQL_ROOT_PASSWORD: #@ data.values.mysql.root_password
+      MYSQL_RANDOM_ROOT_PASSWORD: #@ data.values.mysql.random_root_password
+#@ end

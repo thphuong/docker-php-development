@@ -1,0 +1,19 @@
+#!/bin/bash
+
+values_files="values.default.yml"
+
+if [ -f values.yml ]; then
+    values_files="$values_files values.yml"
+fi
+
+__values_files() {
+    args=''
+
+    for file in $values_files; do
+        args+=" -f $file"
+    done
+
+    echo $args
+}
+
+./bin/ytt --output-directory compose -f templates $(__values_files)

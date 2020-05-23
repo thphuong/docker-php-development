@@ -1,0 +1,70 @@
+#@data/values
+---
+data_path: ./data
+
+traefik:
+  image: traefik:2.2
+  hostname: localhost
+  port: 8000
+
+php:
+  enabled: true
+  image: sunasteriskrnd/php-workspace:7.4
+  mount:
+  #! environment:
+  working_dir: /php
+  #! hosts:
+  #! - name: localhost
+  port: 80
+  nginx:
+    image: nginx:alpine
+    document_root: /php/public
+
+nodejs:
+  enabled: false
+  image: node:12-alpine
+  mount:
+  #! environment:
+  working_dir: /node
+  #! hosts:
+  #! - name: localhost
+  port: 3000
+
+postgres:
+  enabled: false
+  image: postgres:12-alpine
+  host_port:
+  database: postgresql
+  username: postgresql
+  password: secret
+  mem_limit: 512M
+
+mysql:
+  enabled: false
+  image: mysql:8
+  host_port:
+  database: mysql
+  username: mysql
+  password: secret
+  root_password: root
+  random_root_password: false
+  mem_limit: 512M
+
+mariadb:
+  enabled: false
+  image: mariadb:10
+  host_port:
+  database: mariadb
+  username: mariadb
+  password: secret
+  root_password: root
+  random_root_password: false
+  mem_limit: 512M
+
+redis:
+  enabled: false
+  image: redis:alpine
+  host_port:
+  mem_limit: 512M
+
+hosts_file: /etc/hosts

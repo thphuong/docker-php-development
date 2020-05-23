@@ -1,0 +1,16 @@
+#@ load("@ytt:data", "data")
+#@ if data.values.redis.enabled:
+version: '2.2'
+
+services:
+  redis:
+    image: #@ data.values.redis.image
+    restart: always
+    mem_limit: #@ data.values.redis.mem_limit
+    #@ if data.values.redis.host_port:
+    ports:
+      - #@ "{}:6379".format(data.values.redis.host_port)
+    #@ end
+    volumes:
+      - #@ "{}/redis:/data".format(data.values.data_path)
+#@ end

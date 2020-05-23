@@ -1,0 +1,22 @@
+#@ load("@ytt:data", "data")
+#@ if data.values.mariadb.enabled:
+version: '2.2'
+
+services:
+  mariadb:
+    image: #@ data.values.mariadb.image
+    restart: always
+    mem_limit: #@ data.values.mariadb.mem_limit
+    #@ if data.values.mariadb.host_port:
+    ports:
+      - #@ "{}:3306".format(data.values.mariadb.host_port)
+    #@ end
+    volumes:
+      - #@ "{}/mariadb:/var/lib/mysql".format(data.values.data_path)
+    environment:
+      MYSQL_DATABASE: #@ data.values.mariadb.database
+      MYSQL_USER: #@ data.values.mariadb.username
+      MYSQL_PASSWORD: #@ data.values.mariadb.password
+      MYSQL_ROOT_PASSWORD: #@ data.values.mariadb.root_password
+      MYSQL_RANDOM_ROOT_PASSWORD: #@ data.values.mariadb.random_root_password
+#@ end
